@@ -646,7 +646,7 @@
                 NSLog(@"otx: [Exe64Processor processLine:] failed to read from c++filt: %@", [e reason]);
             }
 
-            [readData getBytes: demangledName];
+            [readData getBytes: demangledName length:MAX_LINE_LENGTH];
 
             if (readData != nil)
             {
