@@ -113,7 +113,7 @@ void swap_objc1_64_ivar(objc1_64_ivar *i)
 {
     i->ivar_name   = OSSwapInt64(i->ivar_name);
     i->ivar_type   = OSSwapInt64(i->ivar_type);
-    i->ivar_offset = OSSwapInt64(i->ivar_offset);
+    i->ivar_offset = OSSwapInt32(i->ivar_offset);
 }
 
 
@@ -130,7 +130,7 @@ void swap_objc1_64_category(objc1_64_category *c)
 void swap_objc1_64_method_list(objc1_64_method_list *m)
 {
     m->obsolete     = OSSwapInt64(m->obsolete);
-    m->method_count = OSSwapInt64(m->method_count);
+    m->method_count = OSSwapInt32(m->method_count);
 }
 
 
