@@ -76,7 +76,7 @@
         return nil;
     }
 
-    [theData getBytes: iRAMFile];
+    [theData getBytes: iRAMFile length:iRAMFileSize];
 
     iFileArchMagic  = *(uint32_t*)iRAMFile;
     iExeIsFat   = (iFileArchMagic == FAT_MAGIC || iFileArchMagic == FAT_CIGAM);
