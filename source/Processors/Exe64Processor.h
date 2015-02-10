@@ -8,6 +8,15 @@
 
 #import "ExeProcessor.h"
 
+
+/* DisassemblerType
+    
+*/
+typedef NS_ENUM(short, DisassemblerType)
+{
+    kLLVMDisassembler = 0,
+    kOtoolDisassembler = 1
+};
 /*  MethodInfo
 
     Additional info pertaining to an Obj-C method.
@@ -231,7 +240,9 @@ Function64Info;
                verbosely: (BOOL)inVerbose
              fromSection: (char*)inSectionName
                afterLine: (Line64**)inLine
-           includingPath: (BOOL)inIncludePath;
+           includingPath: (BOOL)inIncludePath
+            disassembler: (DisassemblerType)disassembler;
+
 - (BOOL)printDataSections;
 - (void)printDataSection: (section_info_64*)inSect
                   toFile: (FILE*)outFile;

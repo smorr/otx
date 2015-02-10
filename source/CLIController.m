@@ -73,6 +73,7 @@
         SHOW_METHOD_RETURN_TYPES,
         SHOW_VARIABLE_TYPES,
         SHOW_RETURN_STATEMENTS,
+        USE_OTOOLS_DISASSEMBLER,
         0
     };
 
@@ -161,6 +162,9 @@
                             break;
                         case 'o':
                             iVerify = YES;
+                            break;
+                        case 'Q':
+                            iOpts.useOtoolsDisassembler= !USE_OTOOLS_DISASSEMBLER;
                             break;
 
                         default:
@@ -299,6 +303,7 @@
 
 - (void)usage
 {
+    
     fprintf(stderr,
         "Usage: otx [-bcdelmnoprv] [-arch <arch type>] <object file>\n"
         "\t-b             separate logical blocks\n"

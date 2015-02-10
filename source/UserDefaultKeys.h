@@ -18,5 +18,6 @@
 #define ShowMD5Key                  @"ShowMD5"
 #define ShowMethodReturnTypesKey    @"ShowMethodReturnTypes"
 #define ShowReturnStatementsKey     @"ShowReturnStatements"
+#define UseOtoolsDisassemblerKey    @"UseOtoolsDisassembler"
 #define UseCustomNameKey            @"UseCustomName"
 #define VerboseMsgSendsKey          @"VerboseMsgSends"

@@ -51,6 +51,7 @@
         @"YES",     ShowMD5Key,
         @"YES",     ShowMethodReturnTypesKey,
         @"YES",     ShowReturnStatementsKey,
+        @"YES",     UseOtoolsDisassemblerKey,
         @"0",       UseCustomNameKey,
         @"YES",     VerboseMsgSendsKey,
         nil];
@@ -534,6 +535,8 @@
         [theDefaults boolForKey: ShowIvarTypesKey];
     opts.returnStatements       =
         [theDefaults boolForKey: ShowReturnStatementsKey];
+    opts.useOtoolsDisassembler       =
+    [theDefaults boolForKey: UseOtoolsDisassemblerKey];
 
     id  theProcessor    = [[procClass alloc] initWithURL: iObjectFile
         controller: self options: &opts];

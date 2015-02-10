@@ -314,26 +314,27 @@
 {
     Line64* thePrevVerboseLine  = NULL;
     Line64* thePrevPlainLine    = NULL;
-
+    DisassemblerType disassembler = iOpts.useOtoolsDisassembler?kOtoolDisassembler:kLLVMDisassembler;
+    
     // Read __text lines.
     [self populateLineList: &iVerboseLineListHead verbosely: YES
         fromSection: "__text" afterLine: &thePrevVerboseLine
-        includingPath: YES];
+        includingPath: YES disassembler:disassembler];
 
     [self populateLineList: &iPlainLineListHead verbosely: NO
         fromSection: "__text" afterLine: &thePrevPlainLine
-        includingPath: YES];
+        includingPath: YES disassembler:disassembler];
 
     // Read __coalesced_text lines.
     if (iCoalTextSect.size)
     {
         [self populateLineList: &iVerboseLineListHead verbosely: YES
             fromSection: "__coalesced_text" afterLine: &thePrevVerboseLine
-            includingPath: NO];
+            includingPath: NO disassembler:disassembler];
 
         [self populateLineList: &iPlainLineListHead verbosely: NO
             fromSection: "__coalesced_text" afterLine: &thePrevPlainLine
-            includingPath: NO];
+            includingPath: NO disassembler:disassembler];
     }
 
     // Read __textcoal_nt lines.
@@ -341,11 +342,11 @@
     {
         [self populateLineList: &iVerboseLineListHead verbosely: YES
             fromSection: "__textcoal_nt" afterLine: &thePrevVerboseLine
-            includingPath: NO];
+            includingPath: NO disassembler:disassembler];
 
         [self populateLineList: &iPlainLineListHead verbosely: NO
             fromSection: "__textcoal_nt" afterLine: &thePrevPlainLine
-            includingPath: NO];
+            includingPath: NO disassembler:disassembler];
     }
 
     // Connect the 2 lists.
@@ -367,6 +368,26 @@
     }
 
     // Optionally insert md5.
+    NSString * disassemblerInfo = nil;
+    
+    if (iOpts.useOtoolsDisassembler==kLLVMDisassembler){
+        disassemblerInfo= @"Disassembler: LLVM";
+        
+       
+    }
+    else{
+        disassemblerInfo= @"Disassembler: otool";
+    }
+    
+    Line64* newLine = calloc(1, sizeof(Line64));
+    const char* utf8String = [disassemblerInfo  UTF8String];
+    
+    newLine->length = [disassemblerInfo length];
+    newLine->chars  = malloc(newLine->length + 1);
+    strncpy(newLine->chars, utf8String, newLine->length + 1);
+    
+    [self insertLine:newLine after:iPlainLineListHead inList:&iPlainLineListHead];
+
     if (iOpts.checksum)
         [self insertMD5];
 
@@ -381,7 +402,9 @@
              fromSection: (char*)inSectionName
                afterLine: (Line64**)inLine
            includingPath: (BOOL)inIncludePath
+        disassembler: (DisassemblerType) disassemblerType
 {
+   
     char cmdString[MAX_UNIBIN_OTOOL_CMD_SIZE] = "";
     NSString* otoolPath = [NSString stringWithFormat:@"\"%@\"", [self pathForTool: @"otool"]];
     NSUInteger otoolPathLength = [otoolPath length];
@@ -408,8 +431,9 @@
 
     NSString* oPath = [iOFile path];
     NSString* otoolString = [NSString stringWithFormat:
-        @"%s %s -s __TEXT %s \"%@\"%s", cmdString,
-        (inVerbose) ? "-V" : "-v", inSectionName, oPath,
+        @"%s %s %s -s __TEXT %s \"%@\"%s", cmdString,
+        (inVerbose) ? "-V" : "-v",
+        (disassemblerType==kOtoolDisassembler)?"-Q":"", inSectionName, oPath,
         (inIncludePath) ? "" : " | sed '1 d'"];
     FILE* otoolPipe = popen(UTF8STRING(otoolString), "r");
 

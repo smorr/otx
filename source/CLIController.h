@@ -22,6 +22,7 @@
 #define SHOW_METHOD_RETURN_TYPES        YES
 #define SHOW_VARIABLE_TYPES             YES
 #define SHOW_RETURN_STATEMENTS          YES
+#define USE_OTOOLS_DISASSEMBLER          NO
 
 // ============================================================================
 
