@@ -316,6 +316,15 @@
     Line64* thePrevPlainLine    = NULL;
     DisassemblerType disassembler = iOpts.useOtoolsDisassembler?kOtoolDisassembler:kLLVMDisassembler;
     
+    NSString * disassemblerInfo = nil;
+    
+    if (disassembler==kLLVMDisassembler){
+        disassemblerInfo= @"Disassembler: LLVM";
+    }
+    else{
+        disassemblerInfo= @"Disassembler: otool";
+    }
+    NSLog (@"%@",disassemblerInfo);
     // Read __text lines.
     [self populateLineList: &iVerboseLineListHead verbosely: YES
         fromSection: "__text" afterLine: &thePrevVerboseLine
@@ -368,17 +377,9 @@
     }
 
     // Optionally insert md5.
-    NSString * disassemblerInfo = nil;
+
     
-    if (iOpts.useOtoolsDisassembler==kLLVMDisassembler){
-        disassemblerInfo= @"Disassembler: LLVM";
-        
-       
-    }
-    else{
-        disassemblerInfo= @"Disassembler: otool";
-    }
-    
+    // add disassembler information to output file
     Line64* newLine = calloc(1, sizeof(Line64));
     const char* utf8String = [disassemblerInfo  UTF8String];
     
