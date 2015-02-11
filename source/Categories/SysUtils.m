@@ -39,10 +39,9 @@
     
     if (!internalOtoolPath) {
         NSString * mypath = [[[NSProcessInfo processInfo] arguments] objectAtIndex:0];
-        NSString * otoolPath  = [[mypath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"otool"];
-        
-        
+        internalOtoolPath  = [[mypath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"otool"];
     }
+    
     NSString * otoolDefaultPath = @"/usr/bin/otool";
     
     BOOL found = [self _checkOtool:internalOtoolPath];
