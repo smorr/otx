@@ -16,6 +16,7 @@
 #import "Object64Loader.h"
 #import "SysUtils.h"
 #import "UserDefaultKeys.h"
+#import "CLIController.h"
 
 @implementation Exe64Processor
 
@@ -278,6 +279,8 @@
     [progDict release];
 
     // Create output file.
+    
+    
     if (![self printLinesFromList: iPlainLineListHead])
     {
         return NO;
@@ -379,15 +382,20 @@
     // Optionally insert md5.
 
     
-    // add disassembler information to output file
-    Line64* newLine = calloc(1, sizeof(Line64));
-    const char* utf8String = [disassemblerInfo  UTF8String];
+    [self insertTextLine:disassemblerInfo after:iPlainLineListHead inList:&iPlainLineListHead];
     
-    newLine->length = [disassemblerInfo length];
-    newLine->chars  = malloc(newLine->length + 1);
-    strncpy(newLine->chars, utf8String, newLine->length + 1);
-    
-    [self insertLine:newLine after:iPlainLineListHead inList:&iPlainLineListHead];
+    NSDictionary * bundleInfo = nil;
+    if ([iController respondsToSelector:@selector(bundleInfoDictionary)]){
+        bundleInfo = [(CLIController*)iController bundleInfoDictionary];
+        NSString * version = [bundleInfo objectForKey:@"CFBundleVersion"];
+        if (version){
+            [self insertTextLine:[NSString stringWithFormat:@"Version: %@",version] after:iPlainLineListHead inList:&iPlainLineListHead];
+        }
+        NSString * shortVersion = [bundleInfo objectForKey:@"CFBundleShortVersionString"];
+        if (shortVersion){
+            [self insertTextLine:[NSString stringWithFormat:@"ShortVersion: %@",shortVersion] after:iPlainLineListHead inList:&iPlainLineListHead];
+        }
+    }
 
     if (iOpts.checksum)
         [self insertMD5];
@@ -1518,14 +1526,7 @@
 {
     NSString* md5String = [self generateMD5String];
 
-    Line64* newLine = calloc(1, sizeof(Line64));
-    const char* utf8String = [md5String UTF8String];
-
-    newLine->length = [md5String length];
-    newLine->chars  = malloc(newLine->length + 1);
-    strncpy(newLine->chars, utf8String, newLine->length + 1);
-
-    [self insertLine:newLine after:iPlainLineListHead inList:&iPlainLineListHead];
+    [self insertTextLine:md5String after:iPlainLineListHead inList:&iPlainLineListHead];
 }
 
 #pragma mark -
@@ -2114,6 +2115,31 @@
     }
 
     fprintf(stderr, "\n");
+}
+
+
+-(void)insertTextLine:(NSString*)string after:(Line64 *)prevLine inList:(Line64 **)listHead{
+    // add disassembler information to output file
+    Line64* newLine = calloc(1, sizeof(Line64));
+    const char* utf8String = [string  UTF8String];
+    newLine->length = [string length];
+    newLine->chars  = malloc(newLine->length + 1);
+    strncpy(newLine->chars, utf8String, newLine->length + 1);
+    
+    [self insertLine:newLine after:prevLine inList:listHead];
+    
+}
+
+-(void)insertTextLine:(NSString*)string before:(Line64 *)nextLine inList:(Line64 **)listHead{
+    // add disassembler information to output file
+    Line64* newLine = calloc(1, sizeof(Line64));
+    const char* utf8String = [string  UTF8String];
+    
+    newLine->length = [string length];
+    newLine->chars  = malloc(newLine->length + 1);
+    strncpy(newLine->chars, utf8String, newLine->length + 1);
+    [self insertLine:newLine before:nextLine inList:listHead];
+    
 }
 
 //  printBlocks:

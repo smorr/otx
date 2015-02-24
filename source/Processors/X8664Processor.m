@@ -1406,11 +1406,13 @@
                     break;
 
                 default:
-                    fprintf(stderr, "otx: [X8664Processor commentForMsgSend]: "
-                        "unsupported class name type: %d at address: 0x%llx\n",
-                        classNameType, inLine->info.address);
+                    if (classNamePtr)
+                        [self getObjcDescription:&className fromObject:classNamePtr type:OCClassType];
 
-                    break;
+                    fprintf(stderr, "otx: [X8664Processor commentForMsgSend]: "
+                        "unsupported class name type: %d at address: 0x%llx\n\t\tLine: %s\n\t\tClassName: %s",
+                        classNameType, inLine->info.address,inLine->chars,className);
+                                  break;
             }
         }
 

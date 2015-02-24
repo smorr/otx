@@ -36,6 +36,7 @@
     BOOL                iVerify;
     BOOL                iShowProgress;
     ProcOptions         iOpts;
+    NSDictionary*       bundleInfoDictionary;
 }
 
 - (id)initWithArgs: (char**)argv
@@ -46,5 +47,5 @@
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
        needsPath: (BOOL)inNeedsPath;
-
+- (NSDictionary*)bundleInfoDictionary;
 @end

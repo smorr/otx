@@ -318,6 +318,7 @@
         "\t-p             display progress\n"
         "\t-r             don't show Obj-C method return types\n"
         "\t-v             don't show Obj-C member variable types\n"
+        "\t-Q             use otool disassembler rather than llvm disassembler\n"
         "\t-arch archVal  specify a single architecture in a universal binary\n"
         "\t               if not specified, the host architecture is used\n"
         "\t               allowed values: ppc, ppc64, i386, x86_64\n"
@@ -355,7 +356,8 @@
             "unable to get bundle from path: %s\n", UTF8STRING(origPath));
         return;
     }
-
+    bundleInfoDictionary = [[exeBundle infoDictionary] retain];
+    
     NSString*   exePath = [exeBundle executablePath];
 
     if (!exePath)
@@ -369,6 +371,9 @@
     [self newOFile: [NSURL fileURLWithPath: exePath] needsPath: NO];
 }
 
+-(NSDictionary*)bundleInfoDictionary{
+    return [[bundleInfoDictionary retain] autorelease];
+}
 //  newOFile:
 // ----------------------------------------------------------------------------
 
